@@ -4,18 +4,19 @@
 #include <QVector3D>
 #include <QVector2D>
 
-#include "vertex.h"
+#include "vertexnorm.h"
 
-class VertexTex : public Vertex
+class VertexTex : public VertexNorm
 {
 public:
     VertexTex();
-    VertexTex(QVector3D pos, QVector2D tex);
+    VertexTex(QVector3D inPos, QVector2D inTex);
+    VertexTex(QVector3D inPos, QVector3D inNormal, QVector2D inTex);
 
     QVector2D getTexCoord();
     QVector3D getTangent();
 
-    void setTangent(QVector3D tangent);
+    void setTangent(QVector3D inTangent);
 
 private:
     QVector2D m_tex;

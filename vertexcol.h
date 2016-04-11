@@ -3,13 +3,14 @@
 
 #include <QVector3D>
 
-#include "vertex.h"
+#include "vertexnorm.h"
 
-class VertexCol : public Vertex
+class VertexCol : public VertexNorm
 {
 public:
     VertexCol();
-    VertexCol(QVector3D pos, QVector3D color);
+    VertexCol(QVector3D inPos, QVector3D inColor);
+    VertexCol(QVector3D inPos, QVector3D inNormal, QVector3D inColor);
 
     QVector3D getColor();
 

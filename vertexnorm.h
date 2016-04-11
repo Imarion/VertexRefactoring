@@ -1,13 +1,13 @@
-#ifndef VERTEX_H
-#define VERTEX_H
+#ifndef VERTEXNORM_H
+#define VERTEXNORM_H
 
 #include <QVector3D>
 
-class Vertex
+class VertexNorm
 {
 public:
-    Vertex();
-    Vertex(QVector3D inPos, QVector3D inNormal);
+    VertexNorm();
+    VertexNorm(QVector3D inPos, QVector3D inNormal);
 
     QVector3D getPos();
     QVector3D getNormal();

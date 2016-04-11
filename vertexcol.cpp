@@ -5,10 +5,17 @@ VertexCol::VertexCol()
     m_color  = QVector3D(1.0f, 1.0f, 1.0f);
 }
 
-VertexCol::VertexCol(QVector3D pos, QVector3D color)
+VertexCol::VertexCol(QVector3D inPos, QVector3D inColor)
 {
-    setPos(pos);
-    m_color = color;
+    setPos(inPos);
+    m_color = inColor;
+}
+
+VertexCol::VertexCol(QVector3D inPos, QVector3D inNormal, QVector3D inColor)
+{
+    setPos(inPos);
+    setNormal(inNormal);
+    m_color = inColor;
 }
 
 QVector3D VertexCol::getColor()

@@ -10,15 +10,19 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     Triangle.cpp \
-    vertex.cpp \
     vertexcol.cpp \
-    vertextex.cpp
+    vertextex.cpp \
+    vertexfactory.cpp \
+    ivertexfactory.cpp \
+    vertexnorm.cpp
 
 HEADERS += \
     Triangle.h \
-    vertex.h \
     vertexcol.h \
-    vertextex.h
+    vertextex.h \
+    vertexfactory.h \
+    ivertexfactory.h \
+    vertexnorm.h
 
 OTHER_FILES += \
     fshader.txt \
