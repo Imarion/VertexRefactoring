@@ -3,7 +3,9 @@
 
 #include <QVector3D>
 
-class VertexNorm
+#include "ivertex.h"
+
+class VertexNorm : iVertex
 {
 public:
     VertexNorm();
