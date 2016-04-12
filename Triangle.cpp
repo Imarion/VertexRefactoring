@@ -63,7 +63,7 @@ MyWindow::MyWindow() : currentTimeMs(0), currentTimeS(0)
 
     QTimer *elapsedTimer = new QTimer(this);
     connect(elapsedTimer, &QTimer::timeout, this, &MyWindow::modCurTime);
-    elapsedTimer->start(1);       
+    elapsedTimer->start(1);
 }
 
 void MyWindow::modCurTime()

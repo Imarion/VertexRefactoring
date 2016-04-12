@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     vertextex.cpp \
     vertexfactory.cpp \
     ivertexfactory.cpp \
-    vertexnorm.cpp
+    vertexnorm.cpp \
+    ivertex.cpp
 
 HEADERS += \
     Triangle.h \
@@ -22,7 +23,8 @@ HEADERS += \
     vertextex.h \
     vertexfactory.h \
     ivertexfactory.h \
-    vertexnorm.h
+    vertexnorm.h \
+    ivertex.h
 
 OTHER_FILES += \
     vshader_col.txt \
