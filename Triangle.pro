@@ -25,8 +25,10 @@ HEADERS += \
     vertexnorm.h
 
 OTHER_FILES += \
-    fshader.txt \
-    vshader.txt \
+    vshader_col.txt \
+    fshader_col.txt \
+    fshader_norm.txt \
+    vshader_norm.txt
 
 RESOURCES += \
     shaders.qrc

@@ -16,12 +16,12 @@
 
 MyWindow::~MyWindow()
 {
-    if (mProgram  != 0)   delete   mProgram;
+    if (mProgramCol  != 0)   delete   mProgramCol;
 }
 
 MyWindow::MyWindow() : currentTimeMs(0), currentTimeS(0)
 {
-    mProgram  = 0;
+    mProgramCol  = 0;
 
     setSurfaceType(QWindow::OpenGLSurface);
     setFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
@@ -80,7 +80,7 @@ void MyWindow::initialize()
     CreateVertexBuffer();
     initShaders();
 
-    mRotationMatrixLocation = mProgram->uniformLocation("RotationMatrix");
+    mRotationMatrixLocation = mProgramCol->uniformLocation("RotationMatrix");
 
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
@@ -161,7 +161,7 @@ void MyWindow::render()
     mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
     mFuncs->glVertexAttribBinding(1, 1);
 
-    mProgram->bind();
+    mProgramCol->bind();
     {
         glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -169,7 +169,7 @@ void MyWindow::render()
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
     }
-    mProgram->release();
+    mProgramCol->release();
 
     mContext->swapBuffers(this);
 }
@@ -181,24 +181,23 @@ void MyWindow::initShaders()
     QFile         shaderFile;
     QByteArray    shaderSource;
 
-    //mTreeProgram
-    // Shader 1
-    shaderFile.setFileName(":/vshader.txt");
+    // Shader color
+    shaderFile.setFileName(":/vshader_col.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
-    qDebug() << "vertex tree compile: " << vShader.compileSourceCode(shaderSource);
+    qDebug() << "vertex \"color\" compile: " << vShader.compileSourceCode(shaderSource);
 
-    shaderFile.setFileName(":/fshader.txt");
+    shaderFile.setFileName(":/fshader_col.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
-    qDebug() << "frag   tree compile: " << fShader.compileSourceCode(shaderSource);
+    qDebug() << "frag   \"color\" compile: " << fShader.compileSourceCode(shaderSource);
 
-    mProgram = new (QOpenGLShaderProgram);
-    mProgram->addShader(&vShader);
-    mProgram->addShader(&fShader);
-    qDebug() << "shader link tree: " << mProgram->link();
+    mProgramCol = new (QOpenGLShaderProgram);
+    mProgramCol->addShader(&vShader);
+    mProgramCol->addShader(&fShader);
+    qDebug() << "shader \"color\" link: " << mProgramCol->link();
 }
 
 void MyWindow::PrepareTexture(GLenum TextureTarget, const QString& FileName, GLuint& TexObject, bool flip)

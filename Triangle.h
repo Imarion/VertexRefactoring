@@ -44,7 +44,7 @@ private:
     QOpenGLContext *mContext;
     QOpenGLFunctions_4_3_Core *mFuncs;
 
-    QOpenGLShaderProgram *mProgram;
+    QOpenGLShaderProgram *mProgramCol, *mProgramNorm, *mProgramTex;
 
     QTimer mRepaintTimer;
     double currentTimeMs;
