@@ -12,6 +12,8 @@
 
 #include <QOpenGLShaderProgram>
 
+#include "vertexfactory.h"
+
 #define ToRadian(x) ((x) * M_PI / 180.0f)
 #define ToDegree(x) ((x) * 180.0f / M_PI)
 
@@ -51,9 +53,12 @@ private:
     double currentTimeS;
     bool   mUpdateSize;
 
-    GLuint mVAO, mVBO, mIBO;
-    GLuint mPositionBufferHandle, mColorBufferHandle;
+    GLuint mVAO, mVBO, mIBO;    
     GLuint mRotationMatrixLocation;
+
+    VertexFactory vFactory;
+    iVertex       *mVertices[3];
+    VertexCol *mVertices2;
 
     //debug
     void printMatrix(const QMatrix4x4& mat);

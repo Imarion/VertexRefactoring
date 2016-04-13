@@ -5,7 +5,7 @@
 
 #include "ivertex.h"
 
-class VertexNorm : iVertex
+class VertexNorm // : public iVertex
 {
 public:
     VertexNorm();
