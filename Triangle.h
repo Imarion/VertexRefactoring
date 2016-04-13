@@ -57,7 +57,7 @@ private:
     GLuint mRotationMatrixLocation;
 
     VertexFactory vFactory;
-    Vertex        *mVertices[3];
+    VertexCol     mVertices[3];
     VertexCol     *mVertices2;
 
     //debug

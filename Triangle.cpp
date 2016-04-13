@@ -91,23 +91,15 @@ void MyWindow::initialize()
 
 void MyWindow::CreateVertexBuffer()
 {  
-    /*
-    mVertices[0] = vFactory.MakeVertex(QVector3D(-0.8f, -0.8f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f), QVector3D(1.0f, 0.0f, 0.0f));
-    mVertices[1] = vFactory.MakeVertex(QVector3D( 0.8f, -0.8f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
-    mVertices[2] = vFactory.MakeVertex(QVector3D( 0.0f,  0.8f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f));
-    */
 
-    mVertices2 = new VertexCol[3] {
-        VertexCol(QVector3D( -0.8f, -0.8f, 0.0f),  QVector3D( 1.0f, 0.0f, 0.0f)),
-        VertexCol(QVector3D(  0.8f, -0.8f, 0.0f),  QVector3D( 0.0f, 1.0f, 0.0f)),
-        VertexCol(QVector3D(  0.0f,  0.8f, 0.0f),  QVector3D( 0.0f, 0.0f, 1.0f))
-    };
+    mVertices[0] = vFactory.MakeVertex(QVector3D(-0.8f, -0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(1.0f, 0.0f, 0.0f));
+    mVertices[1] = vFactory.MakeVertex(QVector3D( 0.8f, -0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(0.0f, 1.0f, 0.0f));
+    mVertices[2] = vFactory.MakeVertex(QVector3D( 0.0f,  0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(0.0f, 0.0f, 1.0f));
 
     glGenBuffers(1, &mVBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    //glBufferData(GL_ARRAY_BUFFER, mVertices[0]->size_of() * 3, mVertices, GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(mVertices2[0]) * 3, mVertices2, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mVertices[0]) * 3, mVertices, GL_STATIC_DRAW);
 }
 
 void MyWindow::resizeEvent(QResizeEvent *)
@@ -145,21 +137,16 @@ void MyWindow::render()
     RotationMatrix.rotate(EvolvingVal, QVector3D(0.0f, 0.0f, 0.1f));
 
     glEnableVertexAttribArray(0);
-    //glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(1);
 
-    //mFuncs->glBindVertexBuffer(0, mVBO, 0, mVertices[0]->size_of() * 3);
-    //mFuncs->glBindVertexBuffer(1, mVBO, sizeof(mVertices[0]->getPos())+ sizeof(mVertices[0]->getNormal()), mVertices[0]->size_of() * 3);
-    mFuncs->glBindVertexBuffer(0, mVBO, 0, sizeof(VertexCol));
-    //mFuncs->glBindVertexBuffer(1, mVBO, 0, 9 * sizeof(GLfloat));
-    //qDebug() << "sizeof mvertices[0] " << mVertices[0]->size_of() * 3;
+    mFuncs->glBindVertexBuffer(0, mVBO, 0, sizeof(mVertices[0]));
+    mFuncs->glBindVertexBuffer(1, mVBO, 0, sizeof(mVertices[0]));
 
-    //mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
     mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
     mFuncs->glVertexAttribBinding(0, 0);
 
-    //mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(mVertices[0]->getPos())+ sizeof(mVertices[0]->getNormal()));
-    //mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
-    //mFuncs->glVertexAttribBinding(1, 1);
+    mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(mVertices[0].getPos())+ sizeof(mVertices[0].getNormal()));
+    mFuncs->glVertexAttribBinding(1, 1);
 
     mProgramCol->bind();
     {

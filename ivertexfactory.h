@@ -13,9 +13,9 @@ class iVertexFactory
 public:
     iVertexFactory();
 
-    virtual Vertex     *MakeVertex(QVector3D inPos, QVector3D inNormal) = 0;
-    virtual VertexCol  *MakeVertex(QVector3D inPos, QVector3D inNormal, QVector3D inColor) = 0;
-    virtual VertexTex  *MakeVertex(QVector3D inPos, QVector3D inNormal, QVector2D inTexCoord) = 0;
+    virtual Vertex     MakeVertex(QVector3D inPos, QVector3D inNormal) = 0;
+    virtual VertexCol  MakeVertex(QVector3D inPos, QVector3D inNormal, QVector3D inColor) = 0;
+    virtual VertexTex  MakeVertex(QVector3D inPos, QVector3D inNormal, QVector2D inTexCoord) = 0;
 };
 
 #endif // IVERTEXFACTORY_H
