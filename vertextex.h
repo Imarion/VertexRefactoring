@@ -4,9 +4,9 @@
 #include <QVector3D>
 #include <QVector2D>
 
-#include "vertexnorm.h"
+#include "vertex.h"
 
-class VertexTex : public VertexNorm
+class VertexTex : public Vertex
 {
 public:
     VertexTex();

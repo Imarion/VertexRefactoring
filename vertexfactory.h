@@ -11,7 +11,7 @@ class VertexFactory : public iVertexFactory
 public:
     VertexFactory();
 
-    VertexNorm *MakeVertex(QVector3D inPos, QVector3D inNormal);
+    Vertex     *MakeVertex(QVector3D inPos, QVector3D inNormal);
     VertexCol  *MakeVertex(QVector3D inPos, QVector3D inNormal, QVector3D inColor);
     VertexTex  *MakeVertex(QVector3D inPos, QVector3D inNormal, QVector2D inTexCoord);
 };

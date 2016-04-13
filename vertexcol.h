@@ -3,9 +3,9 @@
 
 #include <QVector3D>
 
-#include "vertexnorm.h"
+#include "vertex.h"
 
-class VertexCol : public VertexNorm
+class VertexCol : public Vertex
 {
 public:
     VertexCol();

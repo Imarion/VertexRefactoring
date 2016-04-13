@@ -4,9 +4,9 @@ VertexFactory::VertexFactory()
 {
 }
 
-VertexNorm *VertexFactory::MakeVertex(QVector3D inPos, QVector3D inNormal)
+Vertex *VertexFactory::MakeVertex(QVector3D inPos, QVector3D inNormal)
 {
-    return new VertexNorm(inPos, inNormal);
+    return new Vertex(inPos, inNormal);
 }
 
 VertexCol *VertexFactory::MakeVertex(QVector3D inPos, QVector3D inNormal, QVector3D inColor)

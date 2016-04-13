@@ -3,13 +3,11 @@
 
 #include <QVector3D>
 
-#include "ivertex.h"
-
-class VertexNorm // : public iVertex
+class Vertex
 {
 public:
-    VertexNorm();
-    VertexNorm(QVector3D inPos, QVector3D inNormal);
+    Vertex();
+    Vertex(QVector3D inPos, QVector3D inNormal);
 
     QVector3D getPos();
     QVector3D getNormal();

@@ -57,8 +57,8 @@ private:
     GLuint mRotationMatrixLocation;
 
     VertexFactory vFactory;
-    iVertex       *mVertices[3];
-    VertexCol *mVertices2;
+    Vertex        *mVertices[3];
+    VertexCol     *mVertices2;
 
     //debug
     void printMatrix(const QMatrix4x4& mat);
