@@ -16,8 +16,8 @@
 
 MyWindow::~MyWindow()
 {
-    if (mProgramCol  != 0)   delete   mProgramCol;
-    delete[] mVertices2;
+    if (mProgramCol   != 0)   delete   mProgramCol;
+    if (mProgramNorm  != 0)   delete   mProgramNorm;
 }
 
 MyWindow::MyWindow() : currentTimeMs(0), currentTimeS(0)
@@ -91,15 +91,23 @@ void MyWindow::initialize()
 
 void MyWindow::CreateVertexBuffer()
 {  
+    mVerticesCol[0] = vFactory.MakeVertex(QVector3D(-0.8f, -0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(1.0f, 0.0f, 0.0f));
+    mVerticesCol[1] = vFactory.MakeVertex(QVector3D(-0.2f, -0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(0.0f, 1.0f, 0.0f));
+    mVerticesCol[2] = vFactory.MakeVertex(QVector3D(-0.5f, -0.2f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(0.0f, 0.0f, 1.0f));
 
-    mVertices[0] = vFactory.MakeVertex(QVector3D(-0.8f, -0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(1.0f, 0.0f, 0.0f));
-    mVertices[1] = vFactory.MakeVertex(QVector3D( 0.8f, -0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(0.0f, 1.0f, 0.0f));
-    mVertices[2] = vFactory.MakeVertex(QVector3D( 0.0f,  0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector3D(0.0f, 0.0f, 1.0f));
+    glGenBuffers(1, &mVBOCol);
 
-    glGenBuffers(1, &mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBOCol);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mVerticesCol[0]) * 3, mVerticesCol, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(mVertices[0]) * 3, mVertices, GL_STATIC_DRAW);
+    mVerticesNorm[0] = vFactory.MakeVertex(QVector3D( 0.2f, -0.8f, 0.0f), QVector3D(1.0f, 1.0f, 0.0f));
+    mVerticesNorm[1] = vFactory.MakeVertex(QVector3D( 0.8f, -0.8f, 0.0f), QVector3D(0.0f, 1.0f, 1.0f));
+    mVerticesNorm[2] = vFactory.MakeVertex(QVector3D( 0.5f, -0.2f, 0.0f), QVector3D(1.0f, 0.0f, 1.0f));
+
+    glGenBuffers(1, &mVBONorm);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVBONorm);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mVerticesNorm[0]) * 3, mVerticesNorm, GL_STATIC_DRAW);
 }
 
 void MyWindow::resizeEvent(QResizeEvent *)
@@ -136,16 +144,17 @@ void MyWindow::render()
 
     RotationMatrix.rotate(EvolvingVal, QVector3D(0.0f, 0.0f, 0.1f));
 
+    glBindBuffer(GL_ARRAY_BUFFER, mVBOCol);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    mFuncs->glBindVertexBuffer(0, mVBO, 0, sizeof(mVertices[0]));
-    mFuncs->glBindVertexBuffer(1, mVBO, 0, sizeof(mVertices[0]));
+    mFuncs->glBindVertexBuffer(0, mVBOCol, 0, sizeof(mVerticesCol[0]));
+    mFuncs->glBindVertexBuffer(1, mVBOCol, 0, sizeof(mVerticesCol[0]));
 
     mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
     mFuncs->glVertexAttribBinding(0, 0);
 
-    mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(mVertices[0].getPos())+ sizeof(mVertices[0].getNormal()));
+    mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(mVerticesCol[0].getPos())+ sizeof(mVerticesCol[0].getNormal()));
     mFuncs->glVertexAttribBinding(1, 1);
 
     mProgramCol->bind();
@@ -157,6 +166,29 @@ void MyWindow::render()
         glDisableVertexAttribArray(1);
     }
     mProgramCol->release();
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVBONorm);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    mFuncs->glBindVertexBuffer(0, mVBONorm, 0, sizeof(mVerticesNorm[0]));
+    mFuncs->glBindVertexBuffer(1, mVBONorm, 0, sizeof(mVerticesNorm[0]));
+
+    mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+    mFuncs->glVertexAttribBinding(0, 0);
+
+    mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(mVerticesNorm[0].getPos()));
+    mFuncs->glVertexAttribBinding(1, 1);
+
+    mProgramNorm->bind();
+    {
+        glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+    }
+    mProgramNorm->release();
 
     mContext->swapBuffers(this);
 }
@@ -185,6 +217,24 @@ void MyWindow::initShaders()
     mProgramCol->addShader(&vShader);
     mProgramCol->addShader(&fShader);
     qDebug() << "shader \"color\" link: " << mProgramCol->link();
+
+    // Shader normal
+    shaderFile.setFileName(":/vshader_norm.txt");
+    shaderFile.open(QIODevice::ReadOnly);
+    shaderSource = shaderFile.readAll();
+    shaderFile.close();
+    qDebug() << "vertex \"normal\" compile: " << vShader.compileSourceCode(shaderSource);
+
+    shaderFile.setFileName(":/fshader_norm.txt");
+    shaderFile.open(QIODevice::ReadOnly);
+    shaderSource = shaderFile.readAll();
+    shaderFile.close();
+    qDebug() << "frag   \"normal\" compile: " << fShader.compileSourceCode(shaderSource);
+
+    mProgramNorm = new (QOpenGLShaderProgram);
+    mProgramNorm->addShader(&vShader);
+    mProgramNorm->addShader(&fShader);
+    qDebug() << "shader \"normal\" link: " << mProgramNorm->link();
 }
 
 void MyWindow::PrepareTexture(GLenum TextureTarget, const QString& FileName, GLuint& TexObject, bool flip)

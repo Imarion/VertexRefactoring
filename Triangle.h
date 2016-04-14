@@ -53,12 +53,13 @@ private:
     double currentTimeS;
     bool   mUpdateSize;
 
-    GLuint mVAO, mVBO, mIBO;    
+    GLuint mVAO, mIBO;
+    GLuint mVBOCol, mVBONorm;
     GLuint mRotationMatrixLocation;
 
     VertexFactory vFactory;
-    VertexCol     mVertices[3];
-    VertexCol     *mVertices2;
+    VertexCol     mVerticesCol[3];
+    Vertex        mVerticesNorm[3];
 
     //debug
     void printMatrix(const QMatrix4x4& mat);
