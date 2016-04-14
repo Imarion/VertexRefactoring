@@ -28,7 +28,9 @@ OTHER_FILES += \
     vshader_col.txt \
     fshader_col.txt \
     fshader_norm.txt \
-    vshader_norm.txt
+    vshader_norm.txt \
+    SpaceTriangle.jpg
 
 RESOURCES += \
-    shaders.qrc
+    shaders.qrc \
+    images.qrc

@@ -16,8 +16,9 @@
 
 MyWindow::~MyWindow()
 {
-    if (mProgramCol   != 0)   delete   mProgramCol;
-    if (mProgramNorm  != 0)   delete   mProgramNorm;
+    if (mProgramCol   != 0)  delete   mProgramCol;
+    if (mProgramNorm  != 0)  delete   mProgramNorm;
+    if (mProgramTex   != 0)  delete   mProgramTex;
 }
 
 MyWindow::MyWindow() : currentTimeMs(0), currentTimeS(0)
@@ -82,6 +83,9 @@ void MyWindow::initialize()
     initShaders();
 
     mRotationMatrixLocation = mProgramCol->uniformLocation("RotationMatrix");
+    gSamplerLocation        = mProgramTex->uniformLocation("gSampler");
+
+    PrepareTexture(GL_TEXTURE_2D, ":/SpaceTriangle.jpg", mTextureObject, false);
 
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
@@ -100,6 +104,7 @@ void MyWindow::CreateVertexBuffer()
     glBindBuffer(GL_ARRAY_BUFFER, mVBOCol);
     glBufferData(GL_ARRAY_BUFFER, sizeof(mVerticesCol[0]) * 3, mVerticesCol, GL_STATIC_DRAW);
 
+
     mVerticesNorm[0] = vFactory.MakeVertex(QVector3D( 0.2f, -0.8f, 0.0f), QVector3D(1.0f, 1.0f, 0.0f));
     mVerticesNorm[1] = vFactory.MakeVertex(QVector3D( 0.8f, -0.8f, 0.0f), QVector3D(0.0f, 1.0f, 1.0f));
     mVerticesNorm[2] = vFactory.MakeVertex(QVector3D( 0.5f, -0.2f, 0.0f), QVector3D(1.0f, 0.0f, 1.0f));
@@ -108,6 +113,17 @@ void MyWindow::CreateVertexBuffer()
 
     glBindBuffer(GL_ARRAY_BUFFER, mVBONorm);
     glBufferData(GL_ARRAY_BUFFER, sizeof(mVerticesNorm[0]) * 3, mVerticesNorm, GL_STATIC_DRAW);
+
+
+    mVerticesTex[0] = vFactory.MakeVertex(QVector3D( -0.3f, 0.2f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector2D(0.0f, 0.0f));
+    mVerticesTex[1] = vFactory.MakeVertex(QVector3D(  0.3f, 0.2f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector2D(1.0f, 0.0f));
+    mVerticesTex[2] = vFactory.MakeVertex(QVector3D(  0.0f, 0.8f, 0.0f), QVector3D(0.0f, 0.0f, 1.0f), QVector2D(0.5f, 1.0f));
+
+    glGenBuffers(1, &mVBOTex);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVBOTex);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mVerticesTex[0]) * 3, mVerticesTex, GL_STATIC_DRAW);
+
 }
 
 void MyWindow::resizeEvent(QResizeEvent *)
@@ -167,6 +183,7 @@ void MyWindow::render()
     }
     mProgramCol->release();
 
+
     glBindBuffer(GL_ARRAY_BUFFER, mVBONorm);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -189,6 +206,34 @@ void MyWindow::render()
         glDisableVertexAttribArray(1);
     }
     mProgramNorm->release();
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVBOTex);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    mFuncs->glBindVertexBuffer(0, mVBOTex, 0, sizeof(mVerticesTex[0]));
+    mFuncs->glBindVertexBuffer(1, mVBOTex, 0, sizeof(mVerticesTex[0]));
+
+    mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+    mFuncs->glVertexAttribBinding(0, 0);
+
+    mFuncs->glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, sizeof(mVerticesTex[0].getPos()) + sizeof(mVerticesTex[0].getNormal()));
+    mFuncs->glVertexAttribBinding(1, 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mTextureObject);
+    glUniform1i(gSamplerLocation, 0);
+    mProgramTex->bind();
+    {
+        glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+    }
+    mProgramTex->release();
+
 
     mContext->swapBuffers(this);
 }
@@ -235,6 +280,24 @@ void MyWindow::initShaders()
     mProgramNorm->addShader(&vShader);
     mProgramNorm->addShader(&fShader);
     qDebug() << "shader \"normal\" link: " << mProgramNorm->link();
+
+    // Shader texture
+    shaderFile.setFileName(":/vshader_tex.txt");
+    shaderFile.open(QIODevice::ReadOnly);
+    shaderSource = shaderFile.readAll();
+    shaderFile.close();
+    qDebug() << "vertex \"texture\" compile: " << vShader.compileSourceCode(shaderSource);
+
+    shaderFile.setFileName(":/fshader_tex.txt");
+    shaderFile.open(QIODevice::ReadOnly);
+    shaderSource = shaderFile.readAll();
+    shaderFile.close();
+    qDebug() << "frag   \"texture\" compile: " << fShader.compileSourceCode(shaderSource);
+
+    mProgramTex = new (QOpenGLShaderProgram);
+    mProgramTex->addShader(&vShader);
+    mProgramTex->addShader(&fShader);
+    qDebug() << "shader \"texture\" link: " << mProgramTex->link();
 }
 
 void MyWindow::PrepareTexture(GLenum TextureTarget, const QString& FileName, GLuint& TexObject, bool flip)

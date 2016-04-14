@@ -4,5 +4,7 @@
         <file>vshader_col.txt</file>
         <file>fshader_norm.txt</file>
         <file>vshader_norm.txt</file>
+        <file>fshader_tex.txt</file>
+        <file>vshader_tex.txt</file>
     </qresource>
 </RCC>

@@ -54,12 +54,14 @@ private:
     bool   mUpdateSize;
 
     GLuint mVAO, mIBO;
-    GLuint mVBOCol, mVBONorm;
-    GLuint mRotationMatrixLocation;
+    GLuint mVBOCol, mVBONorm, mVBOTex;
+    GLuint mRotationMatrixLocation, gSamplerLocation;
+    GLuint mTextureObject;
 
     VertexFactory vFactory;
     VertexCol     mVerticesCol[3];
     Vertex        mVerticesNorm[3];
+    VertexTex     mVerticesTex[3];
 
     //debug
     void printMatrix(const QMatrix4x4& mat);
